@@ -1,23 +1,44 @@
-import 'package:calculator_admin/pages/home/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:calculator_admin/pages/home/home.dart';
+import 'package:calculator_admin/pages/home/widgets/widgets.dart';
+import 'package:calculator_admin/utils/utils.dart';
 
-class HomeView extends StatefulWidget {
+class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
   @override
-  State<HomeView> createState() => HomeState();
-}
-
-class HomeState extends State<HomeView> with WidgetsBindingObserver {
-
-
-  @override
   Widget build(BuildContext context) {
-    return const SafeArea(
-      child: Scaffold(
-        drawer: SideDrawer(),
-        body: Center(child: Text("HOME"))
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "ADMIN PANEL",
+          style: TextStyle(
+            color: CustomColor.eucalyptus,
+            fontSize: 16,
+            fontWeight: FontWeight.w600
+          )
+        )
+      ),
+      drawer: const SideDrawer(),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<HomeBloc>().add(const UsersLoaded());
+        },
+        child: const Padding(
+          padding: EdgeInsets.only(left: 15.0, right: 15.0),
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                SearchBox(),
+                SizedBox(height: 10),
+                UsersListDisplay()
+              ]
+            )
+          )
+        )
       )
     );
   }

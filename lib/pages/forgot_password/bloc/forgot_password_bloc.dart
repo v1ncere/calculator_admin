@@ -1,5 +1,5 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 import 'package:calculator_admin/repository/repository.dart';
@@ -10,7 +10,7 @@ part 'forgot_password_state.dart';
 class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> {
   ForgotPasswordBloc({
     required FirebaseAuthRepository authRepository
-  }) :  _authRepository = authRepository,
+  }) : _authRepository = authRepository,
   super(const ForgotPasswordState()) {
     on<EmailInputChanged>(_onEmailInputChanged);
     on<RequestSubmitted>(_onRequestSubmitted);
@@ -24,16 +24,24 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
 
   void _onRequestSubmitted(RequestSubmitted event, Emitter<ForgotPasswordState> emit) async {
     if(state.isValid) {
+      emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       try {
         await _authRepository.requestResetPassword(email: state.email.value);
-        emit(state.copyWith(status: FormzSubmissionStatus.success, message: "Password reset email sent. Please check your inbox."));
-      } on RequestResetPasswordFailure catch (e) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure, message: e.message));
+        emit(state.copyWith(
+          status: FormzSubmissionStatus.success,
+          message: "Password reset email sent. Please check your inbox."
+        ));
       } catch (e) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure, message: e.toString()));
+        emit(state.copyWith(
+          status: FormzSubmissionStatus.failure,
+          message: "Error: ${e.toString().replaceAll("Exception: ", "")}"
+        ));
       }
     } else {
-      emit(state.copyWith(status: FormzSubmissionStatus.failure, message: 'Oops! Something went wrong.'));
+      emit(state.copyWith(
+        status: FormzSubmissionStatus.failure,
+        message: 'Oops! Something went wrong.'
+      ));
     }
     emit(state.copyWith(status: FormzSubmissionStatus.initial));
   }

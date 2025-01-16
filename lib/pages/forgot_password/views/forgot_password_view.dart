@@ -16,16 +16,16 @@ class ForgotPasswordView extends StatelessWidget {
   Widget build(BuildContext context) { 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Forgot Password',
           style: TextStyle(
-            color: Colors.white,
+            color: CustomColor.deepSea,
             fontSize: 16
           )
         ),
-        backgroundColor: CustomColors.lime,
+        backgroundColor: CustomColor.lime,
       ),
-      backgroundColor: CustomColors.lime,
+      backgroundColor: CustomColor.lime,
       body: BlocListener<ForgotPasswordBloc, ForgotPasswordState>(
         listener: (context, state) {
           if (state.status.isFailure) {
@@ -34,7 +34,8 @@ class ForgotPasswordView extends StatelessWidget {
             ..showSnackBar(customSnackBar(
               state.message,
               FontAwesomeIcons.triangleExclamation,
-              Colors.red,
+              CustomColor.guardsmanRed,
+              CustomColor.mystic
             ));
           }
           if (state.status.isSuccess) {
@@ -43,45 +44,34 @@ class ForgotPasswordView extends StatelessWidget {
             ..showSnackBar(customSnackBar(
               state.message,
               FontAwesomeIcons.circleCheck,
-              Colors.green,
+              CustomColor.deepSea,
+              CustomColor.mystic
             ));
             context.flow<AppStatus>().update((state) => AppStatus.unauthenticated);
           }
         },
-        child: LayoutBuilder(
-          builder:(BuildContext context, BoxConstraints viewportConstraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: viewportConstraints.maxHeight),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              elevation: 5,
+              color: CustomColor.jewel,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+              child: const Padding(
+                padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                        elevation: 5,
-                        color: CustomColors.jewel,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                        child: const Padding(
-                          padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              EmailTextField(),
-                              SizedBox(height: 15),
-                              RequestButton()
-                            ]
-                          )
-                        )
-                      )
-                    )
+                    EmailTextField(),
+                    SizedBox(height: 15),
+                    RequestButton()
                   ]
                 )
               )
-            );
-          }
-        ),
+            )
+          ),
+        )
       )
     );
   }

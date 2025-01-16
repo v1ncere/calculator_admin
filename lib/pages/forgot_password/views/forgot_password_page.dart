@@ -8,7 +8,7 @@ class ForgotPasswordPage extends StatelessWidget {
   const ForgotPasswordPage({super.key});
   
   static Page<void> page() => const MaterialPage<void>(child: ForgotPasswordPage());
-  static final FirebaseAuthRepository _authRepository = FirebaseAuthRepository();
+  static final _authRepository = FirebaseAuthRepository();
 
   @override
   Widget build(BuildContext context) {

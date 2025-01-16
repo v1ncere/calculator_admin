@@ -9,13 +9,14 @@ import 'package:calculator_admin/utils/utils.dart';
 class App extends StatelessWidget {
   const App({super.key});
   static Route<AppStatus> route() => MaterialPageRoute(builder: (_) => const App());
+  static final _firebaseAuth = FirebaseAuthRepository();
 
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-      create: (context) => FirebaseAuthRepository(),
+      create: (context) => _firebaseAuth,
       child: BlocProvider(
-        create: (context) => AppBloc(firebaseAuth: FirebaseAuthRepository()),
+        create: (context) => AppBloc(firebaseAuth: _firebaseAuth),
         child: const AppView(),
       )
     );

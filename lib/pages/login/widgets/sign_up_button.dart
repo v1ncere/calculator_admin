@@ -1,7 +1,4 @@
-import 'package:flow_builder/flow_builder.dart';
 import 'package:flutter/material.dart';
-
-import 'package:calculator_admin/app/app.dart';
 
 class SignUpButton extends StatelessWidget {
   const SignUpButton({super.key});
@@ -9,7 +6,9 @@ class SignUpButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => context.flow<AppStatus>().update((state) => AppStatus.signup),
+      onPressed: () {
+        // context.flow<AppStatus>().update((state) => AppStatus.signup)
+      },
       style: ButtonStyle(
         foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
         overlayColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
@@ -27,7 +26,7 @@ class SignUpButton extends StatelessWidget {
         style: TextStyle(
           color: Colors.white
         )
-      ),
+      )
     );
   }
 }

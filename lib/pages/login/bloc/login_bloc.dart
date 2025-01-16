@@ -1,6 +1,6 @@
+import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 
 import 'package:calculator_admin/repository/repository.dart';
@@ -52,16 +52,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           ));
         } else if (credential != null && !isModerator) {
           emit(state.copyWith(
-              status: FormzSubmissionStatus.failure,
-              message: 'Login failed. Moderator privileges required.',
+            status: FormzSubmissionStatus.failure,
+            message: 'Login failed. Moderator privileges required.',
           ));
         } else {
           emit(state.copyWith(status: FormzSubmissionStatus.success));
         }
-      } on LogInWithEmailAndPasswordFailure catch (e) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure, message: e.message));
       } catch (e) {
-        emit(state.copyWith(status: FormzSubmissionStatus.failure, message: e.toString()));
+        emit(state.copyWith(
+          status: FormzSubmissionStatus.failure,
+          message: "Error: ${e.toString().replaceAll("Exception: ", "")}"
+        ));
       }
     } else {
       emit(state.copyWith(
@@ -74,7 +75,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   Future<Map<dynamic, dynamic>?> get customClaims async {
     final user = FirebaseAuth.instance.currentUser;
-    final idTokenResult = await user?.getIdTokenResult(true);
-    return idTokenResult?.claims;
+    final token = await user?.getIdTokenResult(true);
+    return token?.claims;
   }
 }

@@ -11,7 +11,6 @@ class LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.status != current.status || current.isValid,
       builder: (context, state) {
         return state.status.isInProgress
         ? const Padding(
@@ -32,11 +31,11 @@ class LoginButton extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              foregroundColor: CustomColors.deepSea,
-              backgroundColor: CustomColors.turbo,
+              foregroundColor: CustomColor.deepSea,
+              backgroundColor: CustomColor.turbo,
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
               textStyle: const TextStyle(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
                 fontSize: 20
               )
             ),

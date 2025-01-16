@@ -13,7 +13,7 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomColors.lime,
+      backgroundColor: CustomColor.lime,
       body: BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state.status.isFailure) {
@@ -22,7 +22,8 @@ class LoginView extends StatelessWidget {
             ..showSnackBar(customSnackBar(
               state.message,
               FontAwesomeIcons.triangleExclamation,
-              Colors.red,
+              CustomColor.guardsmanRed,
+              CustomColor.mystic
             ));
           }
         },
@@ -45,7 +46,7 @@ class LoginView extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Card(
                             elevation: 5,
-                            color: CustomColors.jewel,
+                            color: CustomColor.jewel,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25)
                             ),
@@ -58,38 +59,33 @@ class LoginView extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    // FCB CALCULATOR TITLE
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        const Text("FCB", style: TextStyle(
-                                          color:Colors.white,
+                                        Text("Calculator", style: TextStyle(
+                                          color: CustomColor.mystic,
                                           fontFamily: 'San-Serif',
                                           fontWeight: FontWeight.bold,
                                           fontSize: 30
                                         )),
-                                        Text("Calculator", style: TextStyle(
-                                          color:Colors.lightGreenAccent[700],
+                                        Text("Admin", style: TextStyle(
+                                          color: CustomColor.lime,
                                           fontFamily: 'San-Serif',
                                           fontWeight: FontWeight.bold,
                                           fontSize: 30
                                         ))
                                       ]
                                     ),
-                                    // USER ID TEXTFIELD
-                                    const EmailTextField(),
-                                    // _password TEXTFIELD
+                                    const EmailTextField(),           
                                     const PasswordTextField(),
-                                    const SizedBox(height: 5),
-                                    // LOGIN BUTTON
+                                    const SizedBox(height: 5),                              
                                     const LoginButton(),
-                                    // REGISTER FLATBUTTON
                                     const Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        ForgotPasswordButton(),
-                                        SignUpButton(),
-                                      ],
+                                        ForgotPasswordButton()
+                                        // SignUpButton()
+                                      ]
                                     )
                                   ]
                                 )
@@ -104,7 +100,7 @@ class LoginView extends StatelessWidget {
               }
             )
           ]
-        ),
+        )
       )
     );
   }

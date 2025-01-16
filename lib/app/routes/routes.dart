@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:calculator_admin/app/app.dart';
-import 'package:calculator_admin/pages/forgot_password/views/forgot_password_page.dart';
-import 'package:calculator_admin/pages/home/home.dart';
+import 'package:calculator_admin/pages/forgot_password/forgot_password.dart';
+import 'package:calculator_admin/pages/home_flow/home_flow.dart';
 import 'package:calculator_admin/pages/login/login.dart';
 
 List<Page<dynamic>> onGeneratePages(AppStatus state, List<Page<dynamic>> pages) {
@@ -12,8 +12,6 @@ List<Page<dynamic>> onGeneratePages(AppStatus state, List<Page<dynamic>> pages) 
     case AppStatus.unauthenticated:
       return [LoginPage.page()];
     case AppStatus.authenticated:
-      return [HomePage.page()];
-    default:
-      return [LoginPage.page()];
+      return [HomeLanding.page()];
   }
 }

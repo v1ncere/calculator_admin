@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:calculator_admin/app/app.dart';
 import 'package:calculator_admin/repository/repository.dart';
-import 'package:calculator_admin/splash.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,5 +11,5 @@ Future<void> main() async {
   final firebaseAuthRepository = FirebaseAuthRepository();
   await firebaseAuthRepository.user.first;
   Bloc.observer = const AppBlocObserver();
-  runApp(const MaterialApp(home: Splash()));
+  runApp(const App());
 }

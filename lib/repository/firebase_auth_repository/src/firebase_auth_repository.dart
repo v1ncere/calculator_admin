@@ -1,10 +1,9 @@
 import 'dart:async';
 
+import 'package:calculator_admin/repository/repository.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:meta/meta.dart';
-
-import 'package:calculator_admin/repository/repository.dart';
 
 class FirebaseAuthRepository {
   FirebaseAuthRepository({
@@ -48,9 +47,19 @@ class FirebaseAuthRepository {
         password: password
       );
     } on auth.FirebaseAuthException catch (e) {
-      throw SignUpWithEmailAndPasswordFailure.fromCode(e.code);
-    } catch (_) {
-      throw const SignUpWithEmailAndPasswordFailure();
+      if (e.code == 'weak-password') {
+        throw Exception('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        throw Exception('An account already exists for that email.');
+      } else if (e.code == 'invalid-email') {
+        throw Exception('Email is not valid or badly formatted.');
+      } else if (e.code == 'operation-not-allowed') {
+        throw Exception('Operation is not allowed.  Please contact support.');
+      } else {
+        throw Exception(e.message);
+      }
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
@@ -65,9 +74,19 @@ class FirebaseAuthRepository {
         password: password
       );
     } on auth.FirebaseAuthException catch (e) {
-      throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
-    } catch (_) {
-      throw const LogInWithEmailAndPasswordFailure();
+      if (e.code == 'user-not-found') {
+        throw Exception('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        throw Exception('Wrong password provided for that user.');
+      } else if (e.code == 'invalid-credential') {
+        throw Exception('Invalid email or password. Please try again.');
+      } else if (e.code == 'user-disabled') {
+        throw Exception('This user has been disabled. Please contact support for help.');
+      } else {
+        throw Exception(e.message);
+      }
+    } catch(e) {
+      throw Exception(e); 
     }
   }
 
@@ -76,11 +95,12 @@ class FirebaseAuthRepository {
     required String email
   }) async {
     try {
-      return await _firebaseAuth.sendPasswordResetEmail(email: email);
+      await _firebaseAuth.sendPasswordResetEmail(email: email)
+      .catchError((e) => throw Exception(e));
     } on auth.FirebaseAuthException catch (e) {
-      throw RequestResetPasswordFailure.fromCode(e.code);
-    } catch (_) {
-      throw const RequestResetPasswordFailure();
+      throw Exception(e.message);
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
@@ -110,8 +130,8 @@ class FirebaseAuthRepository {
       return otp;
     } on auth.FirebaseAuthException catch (e) {
       throw Exception(e.message);
-    } catch (_) {
-      throw const LogInWithEmailAndPasswordFailure();
+    } catch (e) {
+      throw Exception(e);
     }
   }
   
@@ -128,6 +148,8 @@ class FirebaseAuthRepository {
       await _firebaseAuth.signInWithCredential(credential);
     } on auth.FirebaseAuthException catch (e) {
       throw Exception(e.message);
+    } catch(e) {
+      throw Exception(e);
     }
   }
 
@@ -148,92 +170,6 @@ extension on auth.User {
     email: email,
     isVerified: emailVerified
   );
-}
-
-// EXCEPTIONS ==================================================================
-// =============================================================================
-
-class SignUpWithEmailAndPasswordFailure implements Exception {
-  const SignUpWithEmailAndPasswordFailure([
-    this.message = 'An unknown exception occurred.'
-  ]);
-
-  factory SignUpWithEmailAndPasswordFailure.fromCode(String code) {
-    switch (code) {
-      case 'invalid-email':
-        return const SignUpWithEmailAndPasswordFailure(
-          'Email is not valid or badly formatted.'
-        );
-      case 'email-already-in-use':
-        return const SignUpWithEmailAndPasswordFailure(
-          'An account already exists for that email.'
-        );
-      case 'operation-not-allowed':
-        return const SignUpWithEmailAndPasswordFailure(
-          'Operation is not allowed.  Please contact support.'
-        );
-      case 'weak-password':
-        return const SignUpWithEmailAndPasswordFailure(
-          'Please enter a stronger password.'
-        );
-      default:
-        return const SignUpWithEmailAndPasswordFailure();
-    }
-  }
-  final String message;
-}
-
-class LogInWithEmailAndPasswordFailure implements Exception {
-  const LogInWithEmailAndPasswordFailure([
-    this.message = 'An unknown exception occurred.'
-  ]);
-
-  factory LogInWithEmailAndPasswordFailure.fromCode(String code) {
-    switch (code) {
-      case 'invalid-email':
-        return const LogInWithEmailAndPasswordFailure(
-          'Email is not valid or badly formatted.'
-        );
-      case 'user-disabled':
-        return const LogInWithEmailAndPasswordFailure(
-          'This user has been disabled. Please contact support for help.'
-        );
-      case 'user-not-found':
-        return const LogInWithEmailAndPasswordFailure(
-          'Email is not found, please create an account.'
-        );
-      case 'wrong-password':
-        return const LogInWithEmailAndPasswordFailure(
-          'Incorrect password, please try again.'
-        );
-      default:
-        return const LogInWithEmailAndPasswordFailure();
-    }
-  }
-  final String message;
-}
-
-class RequestResetPasswordFailure implements Exception {
-  const RequestResetPasswordFailure([
-    this.message = 'An unknown exception occurred.',
-  ]);
-
-  factory RequestResetPasswordFailure.fromCode(String code) {
-    switch (code) {
-      case 'user-not-found':
-        return const RequestResetPasswordFailure(
-          'No user corresponding to the email address.',
-        );
-      case 'invalid-email':
-        return const RequestResetPasswordFailure(
-          'Email is not valid or badly formatted.',
-        );
-      default:
-        return const RequestResetPasswordFailure();
-    }
-  }
-
-  final String message;
 }
 
 class LogOutFailure implements Exception {}
